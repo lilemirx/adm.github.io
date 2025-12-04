@@ -3,141 +3,225 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-  <title>Moderatör Panel - emir2MİNN</title>
+  <title>Admin Panel - emir2MİNN</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="admin-page">
   <div class="page">
-    <a href="https://www.google.com/" class="admin-link" style="left: 12px; transform:none;">← Kullanıcı Sayfasına Dön</a>
+    <a href="index.html" class="admin-link" style="left: 12px; transform:none;">← Kullanıcı Sayfasına Dön</a>
 
     <header class="header">
-      <h1 class="logo">Moderatör Kontrol Paneli <span style="font-weight: 300; color: var(--text-muted); font-size: 0.8em;">(Admin)</span></h1>
+      <h1 class="logo">Yönetici Kontrol Paneli <span style="font-weight: 300; color: var(--text-muted); font-size: 0.8em;">(Admin)</span></h1>
       <p class="subtitle">Sistem Yönetimi, Kupon, Duyuru ve Talepler</p>
     </header>
 
-    <!-- Admin panel top actions -->
-    <div id="adminPanelView" style="display:flex; gap:18px; flex-direction:column; max-width:1100px; margin: 0 auto;">
-      <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        <div class="field">
-          <button id="adminClearChatBtn" class="admin-action-btn clear-chat-btn" title="Genel Sohbeti Sıfırla" style="padding:10px; background:#ff6b6b; color:#08121a; border-radius:8px; border:none;">SOHBETİ SIFIRLA</button>
+    <div id="adminPanelView" style="display: flex; gap:18px; flex-direction:column; max-width:1100px; margin: 0 auto;">
+
+      <div class="card admin-controls" id="adminControlsOriginal">
+          <div class="field" style="flex:2">
+              <label for="adminUsername">KULLANICI ADI</label>
+              <input type="text" id="adminUsername" placeholder="İşlem yapılacak kullanıcı" />
+          </div>
+          <div class="field">
+              <label for="adminBanReasonInput">BAN NEDENİ (opsiyonel)</label>
+              <input type="text" id="adminBanReasonInput" placeholder="Kısa açıklama (isteğe bağlı)" />
+          </div>
+          <div class="field">
+              <label for="adminAmount">MİKTAR ($)</label>
+              <input type="number" id="adminAmount" value="10.00" step="0.01" min="0"/>
+          </div>
+          <div class="field">
+              <button id="adminAddBtn" class="admin-action-btn add-btn" title="Bakiyeye Ekle" style="padding:10px; background:var(--accent-success); color:var(--bg-deep); border-radius:8px;">EKLE</button>
+          </div>
+          <div class="field">
+              <button id="adminTakeBtn" class="admin-action-btn take-btn" title="Bakiyesini Al (Sıfırla)" style="padding:10px; background:var(--accent-primary); color:white; border-radius:8px;">AL</button>
+          </div>
+          <div class="field">
+              <button id="adminBanBtn" class="admin-action-btn ban-btn" title="Kullanıcıyı Yasakla/Yasağı Kaldır" style="padding:10px; background:var(--accent-danger); color:white; border-radius:8px;">BAN/UNBAN</button>
+          </div>
+          <div class="field">
+              <button id="adminPremiumBtn" class="admin-action-btn premium-btn" title="Premium Ver/Kaldır" style="padding:10px; background:linear-gradient(90deg,#FFD400,#FF9A00); color:#08121a; border-radius:8px;">PREMIUM VER / KALDIR</button>
+          </div>
+          <div class="field">
+              <button id="adminMakeModBtn" class="admin-action-btn mod-btn" title="Moderator Yap/Kaldır" style="padding:10px; background:#9a59ff; color:white; border-radius:8px;">MOD / UNMOD</button>
+          </div>
+
+          <div class="field">
+              <button id="adminClearChatBtn" class="admin-action-btn clear-chat-btn" title="Genel Sohbeti Sıfırla" style="padding:10px; background:#ff6b6b; color:#08121a; border-radius:8px; border:none;">SOHBETİ SIFIRLA</button>
+          </div>
+
+          <div class="field">
+              <button id="adminChatBanBtn" class="admin-action-btn chat-ban-btn" title="Kullanıcıyı sohbetten engelle / engeli kaldır" style="padding:10px; background:#ffb347; color:#08121a; border-radius:8px; border:none;">CHAT BAN / UNBAN</button>
+          </div>
+
+          <div id="adminMessage" class="message error" style="display: none; width: 100%; margin-top: 10px;"></div>
+      </div>
+
+      <div class="card" style="padding: 12px;">
+        <h3 style="margin-top:0; color:var(--text-muted); font-size:0.95rem;">Genel Ayarlar</h3>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+          <div style="flex:1; min-width:160px;">
+            <label>Günlük Tıklama Limiti (normal kullanıcı)</label>
+            <input id="settingDailyClick" type="number" min="1" step="1" style="width:100%; padding:8px; margin-top:6px;" />
+          </div>
+          <div style="flex:1; min-width:160px;">
+            <label>Günlük Kazanç Limiti ($)</label>
+            <input id="settingDailyEarn" type="number" min="0" step="0.01" style="width:100%; padding:8px; margin-top:6px;" />
+          </div>
+          <div style="flex:1; min-width:160px;">
+            <label>Minimum Çekim Tutarı ($)</label>
+            <input id="settingMinWithdraw" type="number" min="0" step="0.01" style="width:100%; padding:8px; margin-top:6px;" />
+          </div>
+          <div style="align-self:flex-end;">
+            <button id="saveSettingsBtn" style="padding:10px 14px; background:var(--accent-primary); color:#041022; border-radius:8px; border:none;">Ayarları Kaydet</button>
+          </div>
+        </div>
+        <p style="margin-top:8px; color:var(--text-muted); font-size:0.85rem;">Bu ayarlar normal kullanıcılar için geçerlidir. Premium kullanıcılar sınırsızdır.</p>
+      </div>
+
+      <div class="card" style="padding: 12px;">
+        <h3 style="margin-top:0; color:var(--text-muted); font-size:0.95rem;">Bakım Modu (Admin)</h3>
+        <div style="display:flex; gap:8px; align-items:flex-start; flex-wrap:wrap;">
+          <textarea id="maintenanceReasonInput" placeholder="Bakım nedeni (kısa açıklama)" style="flex:1; min-height:56px; padding:8px;"></textarea>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <button id="enableMaintenanceBtn" style="padding:8px 12px; background:#ff6b6b; color:#08121a; border-radius:8px; border:none;">Bakımı Etkinleştir</button>
+            <button id="disableMaintenanceBtn" style="padding:8px 12px; background:var(--accent-success); color:#021122; border-radius:8px; border:none;">Bakımı Devre Dışı Bırak</button>
+          </div>
         </div>
 
-        <div class="field">
-          <button id="adminChatBanBtn" class="admin-action-btn chat-ban-btn" title="Kullanıcıyı sohbetten engelle / engeli kaldır" style="padding:10px; background:#ffb347; color:#08121a; border-radius:8px; border:none;">CHAT BAN / UNBAN</button>
+        <div style="display:flex; gap:8px; margin-top:10px; align-items:center;">
+          <label style="min-width:150px;">Planla (başlangıç zamanı)</label>
+          <input id="maintenanceStartInput" type="datetime-local" style="padding:8px; border-radius:8px;" />
+          <button id="scheduleMaintenanceBtn" style="padding:8px 12px; background:var(--accent-primary); color:#021122; border-radius:8px; border:none;">Planla</button>
+          <button id="cancelScheduledMaintenanceBtn" style="padding:8px 12px; background:rgba(255,255,255,0.03); color:var(--text-muted); border-radius:8px; border:1px solid var(--border-soft);">Planı İptal Et</button>
         </div>
 
-        <div class="field" style="flex:1; min-width:200px;">
-          <button id="openAdminChatWidget" class="admin-action-btn" style="padding:10px; background:var(--accent-primary); color:#021122; border-radius:8px; border:none;">Admin Chat'i Aç</button>
+        <p id="maintenanceStatusText" style="margin-top:8px; color:var(--text-muted); font-size:0.85rem;">Bakım kapalı.</p>
+        <p style="margin-top:6px; color:var(--text-muted); font-size:0.85rem;">Planlanan bakım, başlangıç zamanı gelince otomatik olarak etkinleştirilecektir.</p>
+      </div>
+
+      <div class="card" style="padding: 12px;">
+        <h3 style="margin-top:0; color:var(--text-muted); font-size:0.95rem;">Kuponlar</h3>
+        <div style="display:flex; gap:8px; margin-top:8px; align-items:center;">
+          <input id="couponCodeInput" placeholder="Kupon Kodu (ör: BONUS20)" style="padding:8px; flex:1;" />
+          <input id="couponPercentInput" type="number" placeholder="% Bonus (ör: 20) - bakiye için" min="1" max="500" style="padding:8px; width:120px;" />
+          <select id="couponTypeInput" style="padding:8px; width:160px;">
+            <option value="balance">Bakiye Bonus (withdraw)</option>
+            <option value="click_bonus">Tıklama Bonus (süreli)</option>
+          </select>
+          <input id="couponMultiplierInput" type="number" placeholder="Çarpan (ör:2)" min="1" value="2" style="padding:8px; width:120px;" title="Tıklama bonus çarpanı" />
+          <input id="couponDurationInput" type="number" placeholder="Süre (saniye)" min="1" value="60" style="padding:8px; width:140px;" title="Tıklama bonusunun süresi saniye olarak" />
+          <input id="couponUsesInput" type="number" placeholder="Kullanım (boş=sonsuz)" min="1" style="padding:8px; width:140px;" />
+          <button id="createCouponBtn" style="padding:8px 12px; background:var(--accent-success); color:#021122; border-radius:8px; border:none;">Oluştur</button>
+        </div>
+        <div id="couponList" style="margin-top:10px; color:var(--text-muted); font-size:0.92rem;">Yükleniyor...</div>
+      </div>
+
+      <div class="card" style="padding:12px;">
+        <h3 style="margin-top:0; color:var(--text-muted); font-size:0.95rem;">Duyuru Panosu (Admin)</h3>
+        <div style="display:flex; gap:8px; flex-direction:column; margin-top:8px;">
+          <input id="announceTitleInput" placeholder="Duyuru Başlığı" style="padding:8px;" />
+          <textarea id="announceMsgInput" placeholder="Duyuru mesajı..." style="min-height:80px; padding:8px;"></textarea>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input id="announceExpiresInput" type="number" placeholder="Süre (saniye, boş=kalıcı)" style="padding:8px; width:180px;" />
+            <label style="display:flex; align-items:center; gap:6px; color:var(--text-muted);">
+              <input id="announceStickyInput" type="checkbox" /> Sticky (üstte sabit)
+            </label>
+            <button id="createAnnouncementBtn" style="margin-left:auto; padding:8px 12px; background:var(--accent-primary); color:#021122; border-radius:8px; border:none;">Duyuru Oluştur</button>
+          </div>
+          <div id="adminAnnouncementList" style="margin-top:10px; color:var(--text-muted)"></div>
         </div>
       </div>
 
-      <div id="adminMessage" class="message error" style="display: none; width: 100%; margin-top: 10px;"></div>
-    </div>
-
-    <!-- Genel Ayarlar -->
-    <div class="card" style="padding: 12px; max-width:1100px; margin: 12px auto;">
-      <h3 style="margin-top:0; color:var(--text-muted); font-size:0.95rem;">Genel Ayarlar</h3>
-      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
-        <div style="flex:1; min-width:160px;">
-          <label>Günlük Tıklama Limiti (normal kullanıcı)</label>
-          <input id="settingDailyClick" type="number" min="1" step="1" style="width:100%; padding:8px; margin-top:6px;" />
-        </div>
-        <div style="flex:1; min-width:160px;">
-          <label>Günlük Kazanç Limiti ($)</label>
-          <input id="settingDailyEarn" type="number" min="0" step="0.01" style="width:100%; padding:8px; margin-top:6px;" />
-        </div>
-        <div style="flex:1; min-width:160px;">
-          <label>Minimum Çekim Tutarı ($)</label>
-          <input id="settingMinWithdraw" type="number" min="0" step="0.01" style="width:100%; padding:8px; margin-top:6px;" />
-        </div>
-        <div style="align-self:flex-end;">
-          <button id="saveSettingsBtn" style="padding:10px 14px; background:var(--accent-primary); color:#041022; border-radius:8px; border:none;">Ayarları Kaydet</button>
-        </div>
-      </div>
-      <p style="margin-top:8px; color:var(--text-muted); font-size:0.85rem;">Bu ayarlar normal kullanıcılar için geçerlidir. Premium kullanıcılar sınırsızdır.</p>
-
-      <p id="maintenanceStatusText" style="margin-top:8px; color:var(--text-muted); font-size:0.85rem;">Bakım kapalı.</p>
-      <p style="margin-top:6px; color:var(--text-muted); font-size:0.85rem;">Planlanan bakım, başlangıç zamanı gelince otomatik olarak etkinleştirilecektir.</p>
-    </div>
-
-    <!-- Duyuru Panosu -->
-    <div class="card" style="padding:12px; max-width:1100px; margin: 12px auto;">
-      <h3 style="margin-top:0; color:var(--text-muted); font-size:0.95rem;">Duyuru Panosu (Admin)</h3>
-      <div style="display:flex; gap:8px; flex-direction:column; margin-top:8px;">
-        <input id="announceTitleInput" placeholder="Duyuru Başlığı" style="padding:8px;" />
-        <textarea id="announceMsgInput" placeholder="Duyuru mesajı..." style="min-height:80px; padding:8px;"></textarea>
-        <div style="display:flex; gap:8px; align-items:center;">
-          <input id="announceExpiresInput" type="number" placeholder="Süre (saniye, boş=kalıcı)" style="padding:8px; width:180px;" />
-          <label style="display:flex; align-items:center; gap:6px; color:var(--text-muted);">
-            <input id="announceStickyInput" type="checkbox" /> Sticky (üstte sabit)
-          </label>
-          <button id="createAnnouncementBtn" style="margin-left:auto; padding:8px 12px; background:var(--accent-primary); color:#021122; border-radius:8px; border:none;">Duyuru Oluştur</button>
-        </div>
-        <div id="adminAnnouncementList" style="margin-top:10px; color:var(--text-muted)"></div>
-      </div>
-    </div>
-
-    <!-- Çekim Talepleri -->
-    <div class="card" style="padding: 12px; max-width:1100px; margin: 12px auto;">
-      <h3 style="margin-top:0; color:var(--text-muted); font-size:0.95rem;">Çekim Talepleri</h3>
-      <div style="overflow-x:auto;">
-        <table class="requests-table" style="margin-top:8px; min-width:800px;">
+      <div class="card" style="padding: 12px;">
+        <h3 style="margin-top:0; color:var(--text-muted); font-size:0.95rem;">Kullanıcılar</h3>
+        <table class="user-list-table" style="margin-top:8px;">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Kullanıcı</th>
-              <th>Tutar</th>
-              <th>Ad Soyad</th>
-              <th>Banka / IBAN</th>
-              <th>Tarih</th>
+              <th>Kullanıcı Adı</th>
+              <th>Bakiye</th>
+              <th>Tıklama</th>
               <th>Durum</th>
-              <th>İşlem</th>
+              <th>Premium</th>
+              <th>Rol</th>
+              <th>Eylemler</th>
             </tr>
           </thead>
-          <tbody id="requestsBody">
-            <tr><td colspan="8" style="text-align:center; color:var(--text-muted);">Yükleniyor...</td></tr>
+          <tbody id="userListBody">
+            <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Yükleniyor...</td></tr>
           </tbody>
         </table>
       </div>
-    </div>
 
-    <!-- Leaderboard -->
-    <div class="card" style="padding:12px; max-width:1100px; margin: 12px auto;">
-      <h3 style="margin-top:0; color:var(--text-muted); font-size:0.95rem;">Leaderboard – En Zengin 15 Kullanıcı</h3>
-      <ol id="leaderboardTop15" style="margin:12px 0 0 0; padding-left:22px; font-size:1rem; line-height:1.8;"></ol>
-    </div>
-
-    <!-- Ekstra: En Yüksek Bakiye (ayrı liste, farklı id) -->
-    <div class="card" style="padding:12px; max-width:1100px; margin: 12px auto;">
-      <h3 style="margin-top:0; color:var(--text-muted); font-size:0.95rem;">Leaderboard / En Yüksek Bakiye</h3>
-      <ol id="leaderboardHighestBalances" style="margin-top:8px; color:var(--text-high);"></ol>
-    </div>
-
-    <button onclick="window.logoutAdmin()" class="logout-btn" style="width: 100%; max-width:1100px; margin: 6px auto 30px auto; display:block; padding:12px; border-radius:10px; background:rgba(255,255,255,0.03); border:1px solid var(--border-soft); color:var(--text-high);">Admin Çıkışı Yap</button>
+     <div class="card" style="padding: 12px;">
+  <h3 style="margin-top:0; color:var(--text-muted); font-size:0.95rem;">Çekim Talepleri</h3>
+  <div style="overflow-x:auto;">
+    <table class="requests-table" style="margin-top:8px; min-width:800px;">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Kullanıcı</th>
+          <th>Tutar</th>
+          <th>Ad Soyad</th>
+          <th>Banka / IBAN</th>
+          <th>Tarih</th>
+          <th>Durum</th>
+          <th>İşlem</th>
+        </tr>
+      </thead>
+      <tbody id="requestsBody">
+        <tr><td colspan="8" style="text-align:center; color:var(--text-muted);">Yükleniyor...</td></tr>
+      </tbody>
+    </table>
   </div>
+</div>
 
-  <!-- Admin auth overlay -->
-  <div id="adminAuthView" class="success-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; justify-content: center; align-items: center; z-index: 1000; background: rgba(10, 25, 41, 0.95); backdrop-filter: blur(4px);">
-    <div class="form-container auth-form card" style="padding: 18px; max-width: 420px;">
-      <h2>Yönetici Girişi</h2>
+<div class="card" style="padding:12px;">
+  <h3 style="margin-top:0; color:var(--text-muted); font-size:0.95rem;">Leaderboard – En Zengin 15 Kullanıcı</h3>
+  <ol id="leaderboardList" style="margin:12px 0 0 0; padding-left:22px; font-size:1rem; line-height:1.8;"></ol>
+</div>
 
-      <input type="email" id="adminEmailInput" required placeholder="Admin Email (ör: admin@lilemir.com)" style="width:100%; padding:10px; margin-top:6px; border-radius:8px;" />
-      <input type="password" id="adminPasswordInput" required placeholder="Admin Şifresi" style="width:100%; padding:10px; margin-top:6px; border-radius:8px;" />
-      <div id="adminAuthMessage" class="message error" style="display: none;"></div>
-
-      <div style="display:flex; gap:8px; margin-top:10px;">
-        <button id="adminAuthSubmit" class="cta-login" style="flex:1; padding:10px; border-radius:8px; background:var(--accent-primary); color:#041022; border:none;">Giriş Yap</button>
-        <button id="adminAuthClose" class="logout-btn" style="padding:10px; border-radius:8px; background:rgba(255,255,255,0.03); border:1px solid var(--border-soft); color:var(--text-high);">Kapat</button>
+      <div class="card" style="padding:12px;">
+        <h3 style="margin-top:0; color:var(--text-muted); font-size:0.95rem;">Leaderboard / En Yüksek Bakiye</h3>
+        <ol id="leaderboardList" style="margin-top:8px; color:var(--text-high);"></ol>
       </div>
 
-      <p style="margin-top:10px; font-size:0.85rem; color:var(--text-muted);">Not: Hızlı admin çubuğu oturum açana kadar erişilemez.</p>
+      <button onclick="window.logoutAdmin()" class="logout-btn" style="width: 100%; margin-top: 6px; padding:12px; border-radius:10px; background:rgba(255,255,255,0.03); border:1px solid var(--border-soft); color:var(--text-high);">Admin Çıkışı Yap</button>
     </div>
+
+  <div id="adminAuthView" class="success-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; justify-content: center; align-items: center; z-index: 1000; background: rgba(10, 25, 41, 0.95); backdrop-filter: blur(4px);">
+      <div class="form-container auth-form card" style="padding: 18px; max-width: 420px;">
+        <h2>Yönetici Girişi</h2>
+
+        <input type="email" id="adminEmailInput" required placeholder="Admin Email (ör: admin@lilemir.com)" style="width:100%; padding:10px; margin-top:6px; border-radius:8px;" />
+        <input type="password" id="adminPasswordInput" required placeholder="Admin Şifresi" style="width:100%; padding:10px; margin-top:6px; border-radius:8px;" />
+        <div id="adminAuthMessage" class="message error" style="display: none;"></div>
+
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <button id="adminAuthSubmit" class="cta-login" style="flex:1; padding:10px; border-radius:8px; background:var(--accent-primary); color:#041022; border:none;">Giriş Yap</button>
+          <button id="adminAuthClose" class="logout-btn" style="padding:10px; border-radius:8px; background:rgba(255,255,255,0.03); border:1px solid var(--border-soft); color:var(--text-high);">Kapat</button>
+        </div>
+
+        <p style="margin-top:10px; font-size:0.85rem; color:var(--text-muted);">Not: Hızlı admin çubuğu oturum açana kadar erişilemez.</p>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Admin chat widget -->
-  <div id="adminChatWidget" aria-live="polite" role="complementary" style="display:none; position:fixed; right:20px; bottom:20px; width:340px; z-index:2000; box-shadow:0 8px 24px rgba(0,0,0,0.25); border-radius:10px; overflow:hidden; background:var(--panel-bg);">
+  <div id="bottomAdminBar" role="toolbar" aria-label="Hızlı admin çubuğu" style="display:none;">
+    <input id="bottomAdminUsername" type="text" placeholder="kullanıcı" style="width:180px;">
+    <input id="bottomAdminAmount" type="number" placeholder="$10.00" step="0.01" style="width:120px;">
+    <button id="bottomAddBtn">EKLE</button>
+    <button id="bottomTakeBtn">AL</button>
+    <button id="bottomBanBtn">BAN/UNBAN</button>
+    <button id="bottomPremiumBtn">PREMIUM</button>
+    <button id="bottomModBtn">MOD</button>
+    <button id="bottomToggleMenu" style="margin-left:auto;">MENÜ</button>
+  </div>
+
+  <div id="adminChatWidget" aria-live="polite" role="complementary">
     <div style="padding:12px; border-bottom:1px solid rgba(255,255,255,0.03); display:flex; justify-content:space-between; align-items:center;">
       <strong style="color:var(--accent-primary)">Admin Chat</strong>
       <button id="adminChatClose" style="background:transparent;border:none;color:var(--text-muted);cursor:pointer;">✕</button>
@@ -215,8 +299,6 @@
       const adminChatInput = document.getElementById('adminChatInput');
       const adminChatMessages = document.getElementById('adminChatMessages');
       const adminChatClose = document.getElementById('adminChatClose');
-      const openAdminChatWidget = document.getElementById('openAdminChatWidget');
-      const adminChatWidget = document.getElementById('adminChatWidget');
 
       // Global auth değişkenine erişim artık garantilendi
       function adminName() {
@@ -246,13 +328,6 @@
         });
       }
 
-      if (openAdminChatWidget) {
-        openAdminChatWidget.addEventListener('click', () => {
-          if (adminChatWidget) adminChatWidget.style.display = 'block';
-          if (auth && auth.currentUser) startAdminChat();
-        });
-      }
-
       if (adminChatSendBtn) {
         adminChatSendBtn.addEventListener('click', () => {
           const text = (adminChatInput.value || '').trim();
@@ -267,7 +342,8 @@
 
       if (adminChatClose) {
         adminChatClose.addEventListener('click', () => {
-          if (adminChatWidget) adminChatWidget.style.display = 'none';
+          const w = document.getElementById('adminChatWidget');
+          if (w) w.style.display = 'none';
           if (adminUnsub) try { adminUnsub(); } catch(e){}
         });
       }
